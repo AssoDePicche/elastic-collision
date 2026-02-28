@@ -11,16 +11,26 @@
 #define WINDOW_SECOND_THIRD (WINDOW_SIZE / 3)
 #define WINDOW_THIRD_THIRD (2 * WINDOW_SECOND_THIRD)
 
-typedef struct Game Game;
+enum GameState {
+  GAME_STATE_PLAYER_1_WON,
+  GAME_STATE_PLAYER_2_WON,
+  GAME_STATE_DRAW,
+  GAME_STATE_UNFINISHED,
+};
+
+struct Game {
+  GameState state;
+  char *buffer;
+
+  void Draw(void) const;
+
+  bool IsRunning(void) const;
+
+  void Update();
+};
 
 Game* game_construct(void);
 
 void game_destruct(Game*);
-
-void game_draw(const Game*);
-
-void game_update(Game*);
-
-bool game_is_running(const Game*);
 
 #endif

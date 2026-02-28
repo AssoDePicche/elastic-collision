@@ -1,6 +1,6 @@
 #include <raylib.h>
 
-#include "game.h"
+#include <game/game.h>
 
 int main(void) {
   Game* game = game_construct();
@@ -11,14 +11,14 @@ int main(void) {
 
   SetExitKey(KEY_Q);
 
-  while (!WindowShouldClose() && game_is_running(game)) {
-    game_update(game);
+  while (!WindowShouldClose() && game->IsRunning()) {
+    game->Update();
 
     BeginDrawing();
 
     ClearBackground(WHITE);
 
-    game_draw(game);
+    game->Draw();
 
     EndDrawing();
   }

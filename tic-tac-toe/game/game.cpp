@@ -15,36 +15,24 @@
 #define INDEX1D2D(INDEX) \
   (Vector2) { .x = INDEX % BOARD_ROWS, .y = INDEX / BOARD_COLUMNS, }
 
-typedef enum {
-  GAME_STATE_PLAYER_1_WON,
-  GAME_STATE_PLAYER_2_WON,
-  GAME_STATE_DRAW,
-  GAME_STATE_UNFINISHED,
-} GameState;
-
-struct Game {
-  GameState state;
-  char* buffer;
-};
-
 Game* game_construct(void) {
-  Game* this = (Game*)malloc(sizeof(Game));
+  Game* game= (Game*)malloc(sizeof(Game));
 
-  this->buffer = (char*)malloc(sizeof(char) * BOARD_ROWS * BOARD_COLUMNS);
+  game->buffer = (char*)malloc(sizeof(char) * BOARD_ROWS * BOARD_COLUMNS);
 
   for (size_t index = 0; index < BOARD_ROWS * BOARD_COLUMNS; ++index) {
-    this->buffer[index] = BOARD_BLANK;
+    game->buffer[index] = BOARD_BLANK;
   }
 
-  this->state = GAME_STATE_UNFINISHED;
+  game->state = GAME_STATE_UNFINISHED;
 
-  return this;
+  return game;
 }
 
-void game_destruct(Game* this) {
-  free(this->buffer);
+void game_destruct(Game* game) {
+  free(game->buffer);
 
-  free(this);
+  free(game);
 }
 
 static void draw_game_board(void) {
@@ -111,7 +99,7 @@ static void draw_hover(void) {
       .15, 1, 4, BLUE);
 }
 
-void game_draw(const Game* this) {
+void Game::Draw(void) const {
   draw_hover();
 
   draw_game_board();
@@ -136,13 +124,13 @@ void game_draw(const Game* this) {
   }
 }
 
-static bool cells_are_equal(const Game* this, const size_t i, const size_t j,
+static bool cells_are_equal(const Game* game, const size_t i, const size_t j,
                             const size_t k, const char buffer) {
-  return this->buffer[i] == this->buffer[j] &&
-         this->buffer[i] == this->buffer[k] && this->buffer[i] == buffer;
+  return game->buffer[i] == game->buffer[j] &&
+         game->buffer[i] == game->buffer[k] && game->buffer[i] == buffer;
 }
 
-static bool row_cells_are_equal(const Game* this, const size_t row,
+static bool row_cells_are_equal(const Game* game, const size_t row,
                                 const char player) {
   const size_t i = INDEX2D1D(0, row);
 
@@ -150,10 +138,10 @@ static bool row_cells_are_equal(const Game* this, const size_t row,
 
   const size_t k = INDEX2D1D(2, row);
 
-  return cells_are_equal(this, i, j, k, player);
+  return cells_are_equal(game, i, j, k, player);
 }
 
-static bool column_cells_are_equal(const Game* this, const size_t column,
+static bool column_cells_are_equal(const Game* game, const size_t column,
                                    const char player) {
   const size_t i = INDEX2D1D(column, 0);
 
@@ -161,10 +149,10 @@ static bool column_cells_are_equal(const Game* this, const size_t column,
 
   const size_t k = INDEX2D1D(column, 2);
 
-  return cells_are_equal(this, i, j, k, player);
+  return cells_are_equal(game, i, j, k, player);
 }
 
-static bool primary_diagonal_cells_are_equal(const Game* this,
+static bool primary_diagonal_cells_are_equal(const Game* game,
                                              const char player) {
   const size_t i = INDEX2D1D(0, 0);
 
@@ -172,10 +160,10 @@ static bool primary_diagonal_cells_are_equal(const Game* this,
 
   const size_t k = INDEX2D1D(2, 2);
 
-  return cells_are_equal(this, i, j, k, player);
+  return cells_are_equal(game, i, j, k, player);
 }
 
-static bool secondary_diagonal_cells_are_equal(const Game* this,
+static bool secondary_diagonal_cells_are_equal(const Game* game,
                                                const char player) {
   const size_t i = INDEX2D1D(0, 2);
 
@@ -183,24 +171,24 @@ static bool secondary_diagonal_cells_are_equal(const Game* this,
 
   const size_t k = INDEX2D1D(2, 0);
 
-  return cells_are_equal(this, i, j, k, player);
+  return cells_are_equal(game, i, j, k, player);
 }
 
-static bool have_player_won(const Game* this, const char player) {
-  if (primary_diagonal_cells_are_equal(this, player)) {
+static bool have_player_won(const Game* game, const char player) {
+  if (primary_diagonal_cells_are_equal(game, player)) {
     return true;
   }
 
-  if (secondary_diagonal_cells_are_equal(this, player)) {
+  if (secondary_diagonal_cells_are_equal(game, player)) {
     return true;
   }
 
   for (size_t index = 0; index < BOARD_ROWS; ++index) {
-    if (row_cells_are_equal(this, index, player)) {
+    if (row_cells_are_equal(game, index, player)) {
       return true;
     }
 
-    if (column_cells_are_equal(this, index, player)) {
+    if (column_cells_are_equal(game, index, player)) {
       return true;
     }
   }
@@ -222,7 +210,7 @@ static GameState current_game_state(const Game* game) {
   return GAME_STATE_UNFINISHED;
 }
 
-static void game_input(Game* this) {
+static void game_input(Game* game) {
   if (!IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
       !IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
     return;
@@ -236,22 +224,22 @@ static void game_input(Game* this) {
 
   const size_t index = INDEX2D1D(x, y);
 
-  if (this->buffer[index] != BOARD_BLANK) {
+  if (game->buffer[index] != BOARD_BLANK) {
     return;
   }
 
   const char player =
       IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? BOARD_PLAYER_1 : BOARD_PLAYER_2;
 
-  this->buffer[index] = player;
+  game->buffer[index] = player;
 }
 
-void game_update(Game* this) {
+void Game::Update() {
   game_input(this);
 
   this->state = current_game_state(this);
 }
 
-bool game_is_running(const Game* this) {
+bool Game::IsRunning() const {
   return this->state == GAME_STATE_UNFINISHED;
 }
