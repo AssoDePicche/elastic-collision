@@ -106,8 +106,7 @@ void Ball::Collide(Ball *other) {
 }
 
 void Ball::Draw() {
-  DrawCircle((int)center.x, (int)center.y, radius,
-             color);
+  DrawCircle((int)center.x, (int)center.y, radius, color);
 }
 
 void Ball::Update(const float dt) {

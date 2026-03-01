@@ -6,6 +6,6 @@ add_executable(${PROJECT_NAME} main.cpp)
 
 find_package(raylib REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE game raylib)
+target_link_libraries(${PROJECT_NAME} PRIVATE core game raylib)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION .)

@@ -5,6 +5,7 @@ project(App LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_subdirectory(core)
 add_subdirectory(game)
 add_subdirectory(main)
 
