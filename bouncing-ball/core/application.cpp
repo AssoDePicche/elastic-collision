@@ -6,7 +6,7 @@
 #include <ranges>
 
 namespace raylib {
-  #include <raylib.h>
+#include <raylib.h>
 }
 
 #include "clock.h"

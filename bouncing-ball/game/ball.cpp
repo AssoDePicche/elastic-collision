@@ -17,7 +17,7 @@ static Color GetRandomColor(void) {
   };
 }
 
-Ball *CreateBall(void) {
+Ball *Ball::New(void) {
   Ball *ball = (Ball *)MemAlloc(sizeof(Ball));
 
   if (NULL == ball) {
@@ -56,12 +56,8 @@ Ball *CreateBall(void) {
   return ball;
 }
 
-void FreeBall(Ball *ball) {
-  if (NULL == ball) {
-    return;
-  }
-
-  MemFree(ball);
+void Ball::Destroy(void) {
+  MemFree(this);
 }
 
 bool Ball::CollideWithPoint(const Vector2 point) {

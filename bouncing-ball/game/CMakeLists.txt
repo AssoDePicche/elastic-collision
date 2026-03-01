@@ -1,5 +1,6 @@
 add_library(game STATIC
   ball.cpp
+  hud_layer.cpp
   game_layer.cpp
 )
 

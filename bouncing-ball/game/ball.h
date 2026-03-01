@@ -17,11 +17,11 @@ struct Ball {
 
   void Collide(Ball *);
 
+  void Destroy();
+
   void Draw();
 
   void Update(const float);
+
+  static Ball *New(void);
 };
-
-Ball *CreateBall(void);
-
-void FreeBall(struct Ball *);
