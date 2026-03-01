@@ -1,38 +1,40 @@
 #include "game_layer.h"
 
+#define MAX_BALLS 32
+
 GameLayer::GameLayer() {
-  balls[size++] = Ball::New();
+  balls.push_back(Ball::New());
 }
 
 GameLayer::~GameLayer() {
-  for (size_t index = 0; index < size; ++index) {
-    balls[index]->Destroy();
+  for (auto& ball : balls) {
+    ball->Destroy();
   }
 }
 
 void GameLayer::Render(const float alpha) {
-  for (size_t index = 0; index < size; ++index) {
-    balls[index]->Draw();
+  for (const auto& ball : balls) {
+    ball->Draw();
   }
 }
 
 void GameLayer::Update(const core::Clock::Tick &tick) {
-  if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && size < MAX_BALLS) {
-    balls[size++] = Ball::New();
+  if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && balls.size() < MAX_BALLS) {
+    balls.push_back(Ball::New());
   }
 
   if (IsKeyPressed(KEY_R)) {
-    for (size_t index = 0; index < size; ++index) {
-      balls[index]->Destroy();
+    for (auto &ball : balls) {
+      ball->Destroy();
     }
 
-    size = 0;
+    balls.clear();
 
-    balls[size++] = Ball::New();
+    balls.push_back(Ball::New());
   }
 
-  for (size_t i = 0; i < size; ++i) {
-    for (size_t j = 0; j < size; ++j) {
+  for (size_t i = 0; i < balls.size(); ++i) {
+    for (size_t j = 0; j < balls.size(); ++j) {
       if (i == j) {
         continue;
       }
