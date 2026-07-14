@@ -1,10 +1,5 @@
 #include "application.h"
 
-#include <algorithm>
-#include <cctype>
-#include <fstream>
-#include <ranges>
-
 namespace raylib {
 #include <raylib.h>
 }
