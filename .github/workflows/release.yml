@@ -4,14 +4,15 @@ on:
   push:
     branches:
       - main
-
-permissions:
-  contents: write
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,20 +25,17 @@ jobs:
           chmod +x build.sh
           ./build.sh Release
 
-      - name: Verify and Package Build Artifacts
-        id: package
-        run: |
-          echo "Checking exported files:"
-          ls -la
-
-          tar -czvf artifacts.tar.gz BouncingBall
-
-      - name: Update 'latest' Release
-        uses: ncipollo/release-action@v1
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
         with:
-          artifacts: "artifacts.tar.gz"
-          tag: "latest"
-          name: "Latest"
-          allowUpdates: true
-          removeArtifacts: true
-          makeLatest: true
+          name: binary
+          path: ./BouncingBall
+
+      - name: Update Latest Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          files: ./BouncingBall
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
